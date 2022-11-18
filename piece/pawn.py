@@ -29,5 +29,21 @@ class Pawn:
         return moves
 
 
+class BoardSide:
+    def __init__(self, is_white=True):
+        self.is_white = is_white
+
+
+class Board:
+    white_moves = True
+    sides = (BoardSide(), BoardSide(False))
+
+    def execute_move(self):
+        tmp_move = ""
+
+
+board = Board()
+
+
 pawn = Pawn()
 printer(pawn)
