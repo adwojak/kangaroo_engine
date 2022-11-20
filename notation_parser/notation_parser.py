@@ -79,3 +79,4 @@ with open("tests/sample2.txt") as file_stream:
 pgn_list = pgn.split(" ")
 print(pgn_list)
 NotationParser.pgn_to_object(pgn_list[0])
+print("lol")
