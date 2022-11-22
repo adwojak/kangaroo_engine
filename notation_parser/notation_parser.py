@@ -61,6 +61,7 @@ class Move:
 
 
 class NotationParser:
+    REGEX_SPLITTER = r"(W|B)(\d+).(\w+)"
     # def __init__(self, pgn_string):
     #     self.pgn_string = pgn_string
     #     self.pgn_list = pgn_string.split(" ")
