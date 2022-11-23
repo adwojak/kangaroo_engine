@@ -1,4 +1,5 @@
 from enum import Enum, EnumMeta
+import re
 
 
 class King:
@@ -49,9 +50,10 @@ class Pieces(Enum, metaclass=DefaultEnumMeta):
 
 
 class Move:
-    def __init__(self, white, piece):
+    def __init__(self, white, round, move_sequence):
         self.white = white
-        self.piece = piece
+        self.round = round
+        self.move_sequence = move_sequence
 
 
 # aa = Pieces["a"]
@@ -60,18 +62,30 @@ class Move:
 # aaa = {'B', 'O', 'a', 'Q', '#', 'N', 'd', 'h', '+', 'R', 'g', 'e', 'x', 'c', 'f', 'b', '-', '=', 'K'}
 
 
+STANDARD_REGEX_SPLITTER = r"(W|B)(\d+).(\w+)"
+
+
+class StandardParser:
+
+    @staticmethod
+    def parse_move(pgn_move):
+        return re.match(STANDARD_REGEX_SPLITTER, pgn_move).groups()
+
+    @staticmethod
+    def get_move_object(pgn_move):
+        color, round, move_sequence = StandardParser.parse_move(pgn_move)
+        return Move(color == "W", round, move_sequence)
+
+
 class NotationParser:
-    REGEX_SPLITTER = r"(W|B)(\d+).(\w+)"
+    parser = StandardParser
     # def __init__(self, pgn_string):
     #     self.pgn_string = pgn_string
     #     self.pgn_list = pgn_string.split(" ")
     #     print(self.pgn_list)
 
-    @staticmethod
-    def pgn_to_object(pgn_move):
-        sequence, move = pgn_move.split(".")
-        print(sequence)
-        print(move)
+    def pgn_to_object(self, pgn_move):
+        move_object = self.parser.get_move_object(pgn_move)
 
 
 with open("tests/sample2.txt") as file_stream:
@@ -79,4 +93,4 @@ with open("tests/sample2.txt") as file_stream:
 # notation_parser = NotationParser(pgn)
 pgn_list = pgn.split(" ")
 print(pgn_list)
-NotationParser.pgn_to_object(pgn_list[0])
+NotationParser().pgn_to_object(pgn_list[0])
