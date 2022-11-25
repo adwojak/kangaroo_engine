@@ -1,5 +1,6 @@
 from enum import Enum, EnumMeta
 import re
+from abc import ABC, abstractmethod
 
 
 class King:
@@ -56,41 +57,62 @@ class Move:
         self.move_sequence = move_sequence
 
 
-# aa = Pieces["a"]
-# print(aa)
-# print(Pieces["a"])
-# aaa = {'B', 'O', 'a', 'Q', '#', 'N', 'd', 'h', '+', 'R', 'g', 'e', 'x', 'c', 'f', 'b', '-', '=', 'K'}
-
-
 STANDARD_REGEX_SPLITTER = r"(W|B)(\d+).(\w+)"
 
 
-class StandardParser:
+class BaseParser(ABC):
+    @staticmethod
+    @abstractmethod
+    def notation_to_moves(pgn_string):
+        """Split single notation line into multiple elements representing each move"""
+        raise NotImplementedError
+
+    @staticmethod
+    @abstractmethod
+    def parse_move(pgn_move):
+        """Parse single move into multiple informations - color, round, move ets."""
+        raise NotImplementedError
+
+    @staticmethod
+    @abstractmethod
+    def create_move_object(move_parameters):
+        """Create Move object from given parameters"""
+        raise NotImplementedError
+
+
+class StandardParser(BaseParser):
+    """
+    Parser for below notation:
+    W1.d4 B1.d5 W2.c4 B2.e6 W3.Nc3 B3.Nf6 W4.cxd5 B4.exd5 W5.Bg5 B5.Be7 W6.e3 B6.Ne4 W7.Bxe7 B7.Nxc3 W8.Bxd8 B8.Nxd1
+    """
+
+    @staticmethod
+    def notation_to_moves(pgn_string):
+        moves = []
+        for element in pgn_string.split(" "):
+            move_parameters = StandardParser.parse_move(element)
+            moves.append(StandardParser.create_move_object(move_parameters))
+        return moves
 
     @staticmethod
     def parse_move(pgn_move):
         return re.match(STANDARD_REGEX_SPLITTER, pgn_move).groups()
 
     @staticmethod
-    def get_move_object(pgn_move):
-        color, round, move_sequence = StandardParser.parse_move(pgn_move)
-        return Move(color == "W", round, move_sequence)
+    def create_move_object(move_parameters):
+        color, round_value, move_sequence = move_parameters
+        return Move(color == "W", round_value, move_sequence)
 
 
 class NotationParser:
-    parser = StandardParser
-    # def __init__(self, pgn_string):
-    #     self.pgn_string = pgn_string
-    #     self.pgn_list = pgn_string.split(" ")
-    #     print(self.pgn_list)
+    def __init__(self, parser):
+        self.parser = parser
 
-    def pgn_to_object(self, pgn_move):
-        move_object = self.parser.get_move_object(pgn_move)
+    def parse_moves(self, pgn_notation):
+        moves = self.parser.notation_to_moves(pgn_notation)
+        print(moves)
 
 
 with open("tests/sample2.txt") as file_stream:
     pgn = file_stream.readline().replace("\n", "")
-# notation_parser = NotationParser(pgn)
-pgn_list = pgn.split(" ")
-print(pgn_list)
-NotationParser().pgn_to_object(pgn_list[0])
+NotationParser(StandardParser).parse_moves(pgn)
