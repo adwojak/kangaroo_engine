@@ -116,3 +116,4 @@ class NotationParser:
 with open("tests/sample2.txt") as file_stream:
     pgn = file_stream.readline().replace("\n", "")
 NotationParser(StandardParser).parse_moves(pgn)
+print(0)
