@@ -1,6 +1,7 @@
 from enum import Enum, EnumMeta
 import re
 from abc import ABC, abstractmethod
+from moves.moves import special_moves, Move
 
 
 class King:
@@ -50,12 +51,6 @@ class Pieces(Enum, metaclass=DefaultEnumMeta):
     R = Rook
 
 
-class Move:
-    def __init__(self, white, game_round, move_sequence):
-        self.white = white
-        self.game_round = game_round
-        self.move_sequence = move_sequence
-
 
 PGN_MOVE_REGEX = r"(W|B)(\d+).([a-h1-8KQBNRxO\-\+\=\#]+)"
 
@@ -101,6 +96,8 @@ class StandardParser(BaseParser):
     @staticmethod
     def create_move_object(move_parameters):
         color, round_value, move_sequence = move_parameters
+        if move_sequence in special_moves:
+            return special_moves[move_sequence](color == "W", int(round_value))
         return Move(color == "W", int(round_value), move_sequence)
 
 
@@ -116,4 +113,5 @@ if __name__ == "__main__":
     with open("tests/sample2.txt") as file_stream:
         pgn = file_stream.readline().replace("\n", "")
 
-    moves = NotationParser(StandardParser).parse_moves(pgn)
+moves_to_perform = pgn
+moves = NotationParser(StandardParser).parse_moves(moves_to_perform)
