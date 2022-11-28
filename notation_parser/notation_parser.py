@@ -51,13 +51,13 @@ class Pieces(Enum, metaclass=DefaultEnumMeta):
 
 
 class Move:
-    def __init__(self, white, round, move_sequence):
+    def __init__(self, white, game_round, move_sequence):
         self.white = white
-        self.round = round
+        self.game_round = game_round
         self.move_sequence = move_sequence
 
 
-STANDARD_REGEX_SPLITTER = r"(W|B)(\d+).(\w+)"
+PGN_MOVE_REGEX = r"(W|B)(\d+).([a-h1-8KQBNRxO\-\+\=\#]+)"
 
 
 class BaseParser(ABC):
@@ -96,12 +96,12 @@ class StandardParser(BaseParser):
 
     @staticmethod
     def parse_move(pgn_move):
-        return re.match(STANDARD_REGEX_SPLITTER, pgn_move).groups()
+        return re.match(PGN_MOVE_REGEX, pgn_move).groups()
 
     @staticmethod
     def create_move_object(move_parameters):
         color, round_value, move_sequence = move_parameters
-        return Move(color == "W", round_value, move_sequence)
+        return Move(color == "W", int(round_value), move_sequence)
 
 
 class NotationParser:
@@ -109,11 +109,11 @@ class NotationParser:
         self.parser = parser
 
     def parse_moves(self, pgn_notation):
-        moves = self.parser.notation_to_moves(pgn_notation)
-        print(moves)
+        return self.parser.notation_to_moves(pgn_notation)
 
 
-with open("tests/sample2.txt") as file_stream:
-    pgn = file_stream.readline().replace("\n", "")
-NotationParser(StandardParser).parse_moves(pgn)
-print(0)
+if __name__ == "__main__":
+    with open("tests/sample2.txt") as file_stream:
+        pgn = file_stream.readline().replace("\n", "")
+
+    moves = NotationParser(StandardParser).parse_moves(pgn)
