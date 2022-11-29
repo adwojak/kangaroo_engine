@@ -62,7 +62,7 @@ class NotationParser:
 
 
 if __name__ == "__main__":
-    with open("tests/sample2.txt") as file_stream:
+    with open("tests/single_game.txt") as file_stream:
         pgn = file_stream.readline().replace("\n", "")
 
 moves_to_perform = pgn
