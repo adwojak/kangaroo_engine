@@ -65,5 +65,6 @@ if __name__ == "__main__":
     with open("tests/single_game.txt") as file_stream:
         pgn = file_stream.readline().replace("\n", "")
 
-moves_to_perform = pgn
-moves = NotationParser(StandardParser).parse_moves(moves_to_perform)
+    moves_to_perform = pgn
+    moves = NotationParser(StandardParser).parse_moves(moves_to_perform)
+
