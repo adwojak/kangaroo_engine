@@ -1,6 +1,6 @@
 import re
 from kangaroo.moves.moves import special_moves, Move
-from kangaroo.notation_parser.parsers.base_parser import BaseParser
+from kangaroo.notation_parser.move_parsers.base_parser import BaseParser
 
 PGN_MOVE_REGEX = r"(W|B)(\d+).([a-h1-8KQBNRxO\-\+\=\#]+)"
 
