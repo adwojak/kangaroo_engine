@@ -1,4 +1,3 @@
-from dev_helpers.board_printer import printer
 SIZE = 8
 
 
@@ -41,9 +40,9 @@ class Board:
     def execute_move(self):
         tmp_move = ""
 
-
-board = Board()
-
-
-pawn = Pawn()
-printer(pawn)
+#
+# board = Board()
+#
+#
+# pawn = Pawn()
+# printer(pawn)
