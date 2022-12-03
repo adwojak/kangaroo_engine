@@ -42,4 +42,4 @@ if __name__ == "__main__":
     with open("move_parsers/tests/single_game.txt") as file_stream:
         pgn = file_stream.read()
 
-    moves = NotationParser(PgnParser, "qweeee", PgnSplitter).parse_notation(pgn)
+    moves = NotationParser(PgnParser, "qweeee not again", PgnSplitter).parse_notation(pgn)
